@@ -1,3 +1,6 @@
+import sys
+from pathlib import Path
+sys.path.append(str(Path(__file__).parent / '../../../'))
 from src.config.default import _CN as cfg
 
 cfg.ASPAN.COARSE.COARSEST_LEVEL= [36,36]
