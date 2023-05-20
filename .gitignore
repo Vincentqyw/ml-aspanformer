@@ -8,7 +8,7 @@ tmp.*
 */.ipynb_checkpoints/*
 
 logs/
-weights/
+# weights/
 dump/
 demo/*.mp4
 demo/demo_images/
