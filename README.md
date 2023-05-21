@@ -1,3 +1,5 @@
+# Submodule used in [hloc](https://github.com/Vincentqyw/Hierarchical-Localization) toolbox
+
 # ASpanFormer Implementation
 
 ![Framework](assets/teaser.png)
