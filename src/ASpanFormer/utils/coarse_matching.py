@@ -4,7 +4,7 @@ import torch.nn.functional as F
 from einops.einops import rearrange
 
 from time import time
-
+device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 INF = 1e9
 
 def mask_border(m, b: int, v):
@@ -313,7 +313,7 @@ class CoarseMatching(nn.Module):
         l_ids,b_ids,i_ids = torch.where(mask_conf)
         j_coor=offset[l_ids,b_ids,i_ids,:2] *scale#[N,2]
         i_coor=torch.stack([i_ids%data['hw0_c'][1],i_ids//data['hw0_c'][1]],dim=1)*scale
-        #i_coor=torch.as_tensor([[index%data['hw0_c'][1],index//data['hw0_c'][1]] for index in i_ids]).cuda().float()*scale #[N,2]
+        #i_coor=torch.as_tensor([[index%data['hw0_c'][1],index//data['hw0_c'][1]] for index in i_ids]).to(device).float()*scale #[N,2]
         # These matches is the current prediction (for visualization)
         data.update({
             'offset_bids_'+side: b_ids,  # mconf == 0 => gt matches

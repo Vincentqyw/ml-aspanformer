@@ -8,6 +8,7 @@ from .utils.position_encoding import PositionEncodingSine
 from .aspan_module import LocalFeatureTransformer_Flow, LocalFeatureTransformer, FinePreprocess
 from .utils.coarse_matching import CoarseMatching
 from .utils.fine_matching import FineMatching
+device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
 
 class ASpanFormer(nn.Module):
@@ -120,8 +121,8 @@ class ASpanFormer(nn.Module):
             train_res_h,train_res_w=train_res[0],train_res[1]
         data['pos_scale0'],data['pos_scale1']=[train_res_h/data['image0'].shape[2],train_res_w/data['image0'].shape[3]],\
                                   [train_res_h/data['image1'].shape[2],train_res_w/data['image1'].shape[3]] 
-        data['online_resize_scale0'],data['online_resize_scale1']=torch.tensor([w0/data['image0'].shape[3],h0/data['image0'].shape[2]])[None].cuda(),\
-                                                                    torch.tensor([w1/data['image1'].shape[3],h1/data['image1'].shape[2]])[None].cuda()
+        data['online_resize_scale0'],data['online_resize_scale1']=torch.tensor([w0/data['image0'].shape[3],h0/data['image0'].shape[2]])[None].to(device),\
+                                                                    torch.tensor([w1/data['image1'].shape[3],h1/data['image1'].shape[2]])[None].to(device)
 
     def resize_df(self,image,df=32):
         h,w=image.shape[2],image.shape[3]

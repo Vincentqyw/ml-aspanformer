@@ -3,6 +3,7 @@ from torch.nn import Module
 import torch.nn as nn
 from itertools import product
 from torch.nn import functional as F
+device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
 class layernorm2d(nn.Module):
      
@@ -100,7 +101,7 @@ class HierachicalAttention(Module):
         #B*G*2
         offset_sample=self.sample_offset[None,None]*span_scale
         sample_pixel=offset[:,:,None]+offset_sample#B*G*r^2*2
-        sample_norm=sample_pixel/torch.tensor([wk/2,hk/2]).cuda()[None,None,None]-1
+        sample_norm=sample_pixel/torch.tensor([wk/2,hk/2]).to(device)[None,None,None]-1
         
         q = q.view(bs, -1 , h // self.nsample[0], self.nsample[0], w // self.nsample[0], self.nsample[0]).\
                 permute(0, 1, 2, 4, 3, 5).contiguous().view(bs, self.nhead,self.d_model//self.nhead, -1,self.nsample[0]**2)#B*head*D*G*N(G*N=H*W for q)

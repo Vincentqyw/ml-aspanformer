@@ -3,6 +3,7 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 from .attention import FullAttention, HierachicalAttention ,layernorm2d
+device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
 
 class messageLayer_ini(nn.Module):
@@ -125,7 +126,7 @@ class messageLayer_gla(nn.Module):
 
     def decode_flow(self,flow_feature,kshape):
         bs,h,w=flow_feature.shape[0],flow_feature.shape[2],flow_feature.shape[3]
-        scale_factor=torch.tensor([kshape[1],kshape[0]]).cuda()[None,None,None]
+        scale_factor=torch.tensor([kshape[1],kshape[0]]).to(device)[None,None,None]
         flow=self.flow_decoder(flow_feature.view(bs,-1,h*w)).permute(0,2,1).view(bs,h,w,4)
         flow_coordinates=torch.sigmoid(flow[:,:,:,:2])*scale_factor
         flow_var=flow[:,:,:,2:]

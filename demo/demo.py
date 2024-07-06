@@ -7,6 +7,7 @@ from src.ASpanFormer.aspanformer import ASpanFormer
 from src.config.default import get_cfg_defaults
 from src.utils.misc import lower_config
 import demo_utils 
+device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
 import cv2
 import torch
@@ -37,14 +38,14 @@ if __name__=='__main__':
     matcher = ASpanFormer(config=_config['aspan'])
     state_dict = torch.load(args.weights_path, map_location='cpu')['state_dict']
     matcher.load_state_dict(state_dict,strict=False)
-    matcher.cuda(),matcher.eval()
+    matcher.to(device),matcher.eval()
 
     img0,img1=cv2.imread(args.img0_path),cv2.imread(args.img1_path)
     img0_g,img1_g=cv2.imread(args.img0_path,0),cv2.imread(args.img1_path,0)
     img0,img1=demo_utils.resize(img0,args.long_dim0),demo_utils.resize(img1,args.long_dim1)
     img0_g,img1_g=demo_utils.resize(img0_g,args.long_dim0),demo_utils.resize(img1_g,args.long_dim1)
-    data={'image0':torch.from_numpy(img0_g/255.)[None,None].cuda().float(),
-          'image1':torch.from_numpy(img1_g/255.)[None,None].cuda().float()} 
+    data={'image0':torch.from_numpy(img0_g/255.)[None,None].to(device).float(),
+          'image1':torch.from_numpy(img1_g/255.)[None,None].to(device).float()} 
     with torch.no_grad():   
       matcher(data,online_resize=True)
       corr0,corr1=data['mkpts0_f'].cpu().numpy(),data['mkpts1_f'].cpu().numpy()
