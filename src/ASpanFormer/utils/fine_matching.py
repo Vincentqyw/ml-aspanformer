@@ -3,7 +3,10 @@ import torch
 import torch.nn as nn
 
 from kornia.geometry.subpix import dsnt
-from kornia.utils.grid import create_meshgrid
+try:
+    from kornia.geometry import create_meshgrid  # kornia >= 0.8.3
+except ImportError:
+    from kornia.utils import create_meshgrid  # kornia < 0.8.3
 
 
 class FineMatching(nn.Module):
